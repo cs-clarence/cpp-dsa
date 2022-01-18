@@ -1,5 +1,5 @@
-#include <cstdint>
 #include <iostream>
+#include <stdint.h>
 #include <string>
 
 template<class Value>
@@ -120,30 +120,76 @@ public:
   }
 };
 
+struct Student
+{
+  std::string name;
+  SinglyLinkedList<double> testScores;
+  double average;
+};
+
 int main()
 {
-  std::string studentName;
-  SinglyLinkedList<double> testScores;
+  SinglyLinkedList<Student> students;
 
-  std::cout << "Input Name: ";
-  std::getline(std::cin, studentName);
-
-  for (uint64_t i = 1; i < 5; ++i)
+  size_t studentNumber = 1;
+  while (true)
   {
-    double testScore = 0;
-    std::cout << "Input Test Score #" << i << " (Up to 100 Points): ";
-    std::cin >> testScore;
-    testScores.push(testScore);
+    std::cout << "===================================================="
+              << std::endl;
+    std::cout << "Student Number #" << studentNumber << std::endl;
+    Student student;
+    std::cout << "Input Name: ";
+    std::getline(std::cin, student.name);
+
+    double accumulator = 0;
+    for (uint64_t i = 1; i < 5; ++i)
+    {
+      double testScore = 0;
+      std::cout << "Input Test Score #" << i << " (Up to 100 Points): ";
+      std::cin >> testScore;
+      accumulator += testScore;
+      student.testScores.push(testScore);
+    }
+
+    student.average = accumulator / 4;
+
+    students.push(student);
+
+    std::cout << "Average: " << student.average << std::endl;
+
+    int answer = 0;
+    std::cout << "Add more students? 1 = yes: ";
+    std::cin >> answer;
+
+    if (answer != 1) { break; }
+
+    std::cin.ignore(1, '\n');
+    ++studentNumber;
   }
 
-  double accumulator = 0;
-  for (uint64_t i = 1; i < 5; ++i)
+  std::cout << "===================================================="
+            << std::endl;
+  while (students.size() != 0)
   {
-    accumulator += testScores.back();
-    testScores.pop();
-  }
+    Student student = students.back();
+    students.pop();
 
-  std::cout << "Your Average Is: " << accumulator / 4 << std::endl;
+    double testScore1 = student.testScores.back();
+    student.testScores.pop();
+    double testScore2 = student.testScores.back();
+    student.testScores.pop();
+    double testScore3 = student.testScores.back();
+    student.testScores.pop();
+    double testScore4 = student.testScores.back();
+    student.testScores.pop();
+
+    std::cout << "STUDENT NAME: " << student.name
+              << "\tTEST SCORE #1: " << testScore1
+              << "\tTEST SCORE #2: " << testScore2
+              << "\tTEST SCORE #3: " << testScore3
+              << "\tTEST SCORE #4: " << testScore4
+              << "\tAVERAGE: " << student.average << std::endl;
+  }
 
   return 0;
 }
