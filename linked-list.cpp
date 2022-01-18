@@ -33,7 +33,7 @@ public:
   SinglyLinkedList() {}
   ~SinglyLinkedList()
   {
-    // free all the nodes
+    // Unimplemented: free all the nodes
   }
 
   void push(Value v)
@@ -112,6 +112,9 @@ public:
 
 int main()
 {
-  // your code here
+  SinglyLinkedList<int> intList; // create the linked list object
+  intList.push(20);              // add the value 20 to the list
+  int value = intList.back();    // get the recently added value
+
   return 0;
 }
