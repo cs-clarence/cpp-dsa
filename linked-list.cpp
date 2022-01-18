@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include <string>
 
 template<class Value>
 class SinglyLinkedList
@@ -13,8 +14,7 @@ private:
     NodeValue value;
     SinglyLinkedNode<NodeValue> *next;
 
-    SinglyLinkedNode(
-      NodeValue value, SinglyLinkedNode<NodeValue> *next = nullptr)
+    SinglyLinkedNode(NodeValue value, SinglyLinkedNode<NodeValue> *next = NULL)
     {
       this->value = value;
       this->next = next;
@@ -25,9 +25,9 @@ private:
 
   // ! Head and Tail must always point to something, .
   // or both point to nothing (null)
-  Node *_head = nullptr;
-  Node *_tail = nullptr;
-  uint64_t _size = 0;
+  Node *_head = NULL;
+  Node *_tail = NULL;
+  size_t _size = 0;
 
 public:
   SinglyLinkedList() {}
@@ -44,7 +44,7 @@ public:
     if (this->_head == this->_tail)
     {
       // both could be null, so point to the new node
-      if (this->_head == nullptr) { this->_head = this->_tail = newNode; }
+      if (this->_head == NULL) { this->_head = this->_tail = newNode; }
       else {
         this->_tail = newNode;
         this->_head->next = this->_tail;
@@ -59,20 +59,30 @@ public:
     ++this->_size;
   }
 
-  uint64_t size() { return this->_size; }
+  size_t size() const { return this->_size; }
 
-  Value front()
+  Value front() const
   {
-    if (this->_head == nullptr) { throw "Error: front is null"; }
+    if (this->_head == NULL) { throw "Error: front is null"; }
 
     return this->_head->value;
   }
 
-  Value back()
+  Value back() const
   {
-    if (this->_tail == nullptr) { throw "Error: backk= is null"; }
+    if (this->_tail == NULL) { throw "Error: back= is null"; }
 
     return this->_tail->value;
+  }
+
+  const Value &operator[](size_t index) const
+  {
+    if (index >= this->_size - 1) { throw "Error: index out of bounds"; }
+
+    Node *curentNode = this->_head;
+    for (size_t i = 0; i < index; ++i) { curentNode = curentNode->next; }
+
+    return curentNode->value;
   }
 
   void pop()
@@ -80,19 +90,19 @@ public:
     // if both point to the same thing
     if (this->_head == this->_tail)
     {
-      if (this->_head != nullptr)
+      if (this->_head != NULL)
       {
         // both point to the same node,
         Node *currentNode = this->_head;
 
-        this->_tail = this->_head = nullptr;
+        this->_tail = this->_head = NULL;
 
         delete currentNode;
         --this->_size;
       }
     }
     else {
-      Node *previousNode;
+      Node *previousNode = NULL;
       Node *currentNode = this->_head;
 
       // walk the list
@@ -102,7 +112,7 @@ public:
         currentNode = currentNode->next;
       }
 
-      previousNode->next = nullptr;
+      previousNode->next = NULL;
 
       this->_tail = previousNode;
       --this->_size;
@@ -112,9 +122,28 @@ public:
 
 int main()
 {
-  SinglyLinkedList<int> intList; // create the linked list object
-  intList.push(20);              // add the value 20 to the list
-  int value = intList.back();    // get the recently added value
+  std::string studentName;
+  SinglyLinkedList<double> testScores;
+
+  std::cout << "Input Name: ";
+  std::getline(std::cin, studentName);
+
+  for (uint64_t i = 1; i < 5; ++i)
+  {
+    double testScore = 0;
+    std::cout << "Input Test Score #" << i << " (Up to 100 Points): ";
+    std::cin >> testScore;
+    testScores.push(testScore);
+  }
+
+  double accumulator = 0;
+  for (uint64_t i = 1; i < 5; ++i)
+  {
+    accumulator += testScores.back();
+    testScores.pop();
+  }
+
+  std::cout << "Your Average Is: " << accumulator / 4 << std::endl;
 
   return 0;
 }
